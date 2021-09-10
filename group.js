@@ -5,7 +5,6 @@ async function createGroup() {
         let chain = $("#chain-select").val();
 
         let token = await Moralis.Cloud.run("getToken", {address: tokenAddressInput, chain: chain});
-        console.log(token);
 
         if(tokenAddressInput.length <= 10){
             if(chain == "eth" || chain == "ropsten" || chain == "kovan" || chain == "rinkeby"){
@@ -33,13 +32,13 @@ async function createGroup() {
             chatGroup.set("description", $("#description-input").val());
             if(token[0].address == undefined){
                 let amount = amountInput * (10**18);
-                console.log(amount);
+    
                 chatGroup.set("token", tokenAddressInput);
                 chatGroup.set("tokenAmount", amount)
             }else{
-                console.log(token[0].decimals)
+    
                 let amount = amountInput * (10**token[0].decimals);
-                console.log(amount);
+    
                 chatGroup.set("token", token[0].address);
                 chatGroup.set("tokenAmount", amount);
             }
@@ -48,9 +47,7 @@ async function createGroup() {
             const url = await uploadGroupImage();
             chatGroup.set("image", url);
             await chatGroup.save();
-            console.log("group created");
             getAllGroups();
-    
     
             $("#info2").empty();
             $("#info2").html("<strong>DONE</strong>");
@@ -76,9 +73,7 @@ async function createNFTGroup(){
     const url = await uploadGroupImage();
     chatGroup.set("image", url);
     await chatGroup.save();
-    console.log("NFT group created");
     getAllGroups();
-
 
     $("#info2").empty();
     $("#info2").html("<strong>DONE</strong>");
@@ -114,7 +109,7 @@ async function getAllGroups(){
                             </div>
                             <div class="col-8">
                                 <p class="fs-5 mdb1 text-break"><strong>${group.get("name")}</strong></p>
-                                <button id="chat" class="btn btn-dark mb-2 mt-0 rounded-pill" onclick="renderChatGroupInfo('${group.get("name")}', '${group.get("description")}', '${group.id}', '${group.get("image")}', '${group.get("token")}', '${group.get("tokenAmount")}', '${group.get("chain")}', '${group.get("nft")}')">CHAT</button>
+                                <button id="chat" class="btn btn-dark mb-2 mt-0 w-50 rounded-pill" onclick="renderChatGroupInfo('${group.get("name")}', '${group.get("description")}', '${group.id}', '${group.get("image")}', '${group.get("token")}', '${group.get("tokenAmount")}', '${group.get("chain")}', '${group.get("nft")}')">CHAT</button>
                             </div>
                         </div>`;
         currentDiv.innerHTML += content; 
@@ -132,48 +127,57 @@ async function renderChatGroupInfo(name, description, id, image, tokenAddress, t
     let amount = tokenAmount;
 
     if(nft == 0) {
-        console.log(tokenAddress, chain);
         let nftMetadata = await Moralis.Cloud.run("getNFTMetadata", {address: tokenAddress, chain: chain});
-        console.log(nftMetadata);
         tokenName = nftMetadata.name;
         tokenSymbol = nftMetadata.contract_type;
+        if(nftMetadata.symbol == null) {
+            tokenTicker = nftMetadata.name
+        }else{
+            tokenTicker = nftMetadata.symbol;
+        }        
         tokenDecimals = 0;
     }else{
         let token = await Moralis.Cloud.run("getToken", {address: tokenAddress, chain: chain});
         if(token == undefined){
             if(chain == "eth" || chain == "ropsten" || chain == "kovan" || chain == "rinkeby"){
-                tokenName = "Ethereum"
-                tokenSymbol = "ETH"
+                tokenName = "Ethereum";
+                tokenSymbol = "ETH";
                 tokenDecimals = 18;
+                tokenTicker = "ETH";
+                amount = tokenAmount / (10**tokenDecimals);
             }
             if(chain == "bsc" || chain == "0x61"){
-                tokenName = "Binance Coin"
-                tokenSymbol = "BNB"
+                tokenName = "Binance Coin";
+                tokenSymbol = "BNB";
                 tokenDecimals = 18;
+                tokenTicker = "BNB";
+                amount = tokenAmount / (10**tokenDecimals);
             }
             if(chain == "matic" || chain == "0x89"){
-                tokenName = "Matic Token"
-                tokenSymbol = "MATIC"
+                tokenName = "Matic Token";
+                tokenSymbol = "MATIC";
                 tokenDecimals = 18;
+                tokenTicker = "MATIC";
+                amount = tokenAmount / (10**tokenDecimals);
             }
         }else{
             tokenName = token[0].name;
             tokenSymbol = token[0].symbol;
             tokenDecimals = token[0].decimals;
+            tokenTicker = token.symbol;
             amount = tokenAmount / (10**tokenDecimals);
             chainName;
         }
     }
 
-
     if(chain == "eth"){
-        chainName = "Ethereum Blockchain";
+        chainName = "Ethereum Mainnet";
     }
     if(chain == "bsc"){
-        chainName = "Binance Smart Chain";
+        chainName = "Binance Smart Chain Mainnet";
     }
     if(chain == "matic"){
-        chainName = "Polygon Network";
+        chainName = "Polygon Network Mainnet";
     }
     if(chain == "kovan"){
         chainName = "Kovan Testnet";
@@ -190,7 +194,6 @@ async function renderChatGroupInfo(name, description, id, image, tokenAddress, t
     if(chain == "0x89"){
         chainName = "Polygon Testnet";
     }
-
 
     $("#info3").empty();
     $("#groupInfoDiv").empty();
@@ -213,7 +216,7 @@ async function renderChatGroupInfo(name, description, id, image, tokenAddress, t
     $("#groupDescription").html(description);
     $("#chain").html(`<h6 class="text-center mt-4 fs-5">Requirements to join:</h6>Chain: <strong>${chainName}</strong>`);
     $("#token").html(`Token: <strong>${tokenName} (${tokenSymbol})</strong>`);
-    $("#tokenAmount").html(`Amount: <strong>${amount}</strong>`);
+    $("#tokenAmount").html(`Amount: <strong>${amount} ${tokenTicker}</strong>`);
     $("#buttonJoinDiv").html(`<button onclick="joinChatGroup('${id}', '${tokenAddress}', '${tokenAmount}', '${name}', '${image}', '${chain}', '${nft}')" class="btn btn-success w-100 fw-bold mt-5 mb-5" id="join-btn">Start Chatting</button>`);
 
     $("#infoAboutGroup").show();
@@ -232,14 +235,9 @@ async function joinChatGroup(id, tokenAddress, tokenAmount, name, img, chain, nf
     let tokenBalance;
     let requiredBalance;
     let nftBalance;
-
-    const user = await Moralis.User.current();
-    let ethAddress = user.get("ethAddress");
     
     if(nft == 0){
-        console.log("joining nft group" + "NFT: " + nft);
-        nftBalance = await checkNFTBalance(chain, tokenAddress, ethAddress);
-        console.log("NFT balance: " + nftBalance);
+        nftBalance = await checkNFTBalance(chain, tokenAddress);
     }else{
         let token = await Moralis.Cloud.run("getToken", {address: tokenAddress, chain: chain});
         let decimals;
@@ -265,12 +263,11 @@ async function joinChatGroup(id, tokenAddress, tokenAmount, name, img, chain, nf
     }else{
         //subscription.unsubscribe();
         $("#info3").html("Joined!");
-        console.log("Joined group!");
         $("#chatDiv").empty();
         $("#chat-title").html(`<img src="${img}" width=40 height=40 style="border: 1px solid black; border-radius: 50%;" class="d-inline-block float-start fw-bolder"/><h4 class="d-inline-block ms-3">${name}</h4><hr class="fw-bold">`)
         $("#message-input-div").html(`<hr>
         <div class="input-group mb-1">
-            <input type="text" rows="1" id="message-input" class="form-control" placeholder="Write your message . . . ." aria-label="Write your Message" aria-describedby="send-btn">
+            <textarea type="text" rows="2" id="message-input" class="form-control" placeholder="Write your message . . . ." aria-label="Write your Message" aria-describedby="send-btn"></textarea>
             <button id="send-btn" type="button" onclick="sendMessage('${id}', '${chain}', '${tokenAddress}', '${tokenAmount}', '${nft}')" class="btn btn-primary">Send</button>
         </div>`);
         $("#message-input-div").show();
@@ -281,14 +278,12 @@ async function joinChatGroup(id, tokenAddress, tokenAmount, name, img, chain, nf
     }
 }
 
-async function checkBalance(chain, tokenAddress, decimals) {
+async function checkBalance(chain, tokenAddress) {
     const user = Moralis.User.current();
     let ethAddress = user.get("ethAddress");
 
     if(tokenAddress.length > 6){
-        console.log(chain, tokenAddress)
         const tokenBalanceObject1 = await Moralis.Web3.getERC20({chain: chain, tokenAddress: tokenAddress, address: ethAddress});
-        console.log(tokenBalanceObject1.balance)
         return tokenBalanceObject1.balance;
     }else{
         const tokenBalanceObject = await Moralis.Web3API.account.getNativeBalance({chain: chain, address: ethAddress})
@@ -297,7 +292,9 @@ async function checkBalance(chain, tokenAddress, decimals) {
 }
 
 
-async function checkNFTBalance(chain, tokenAddress, ethAddress){
+async function checkNFTBalance(chain, tokenAddress){
+    const user = Moralis.User.current();
+    let ethAddress = user.get("ethAddress");
     const options = { chain: chain, address: ethAddress, token_address: tokenAddress};
     const nfts = await Moralis.Web3API.account.getNFTsForContract(options);
     let arr = nfts.result;
