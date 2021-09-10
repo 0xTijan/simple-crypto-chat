@@ -23,8 +23,9 @@
         <script src="https://github.com/WalletConnect/walletconnect-monorepo/releases/download/1.4.1/web3-provider.min.js"></script>
         <title>Crypto Chat</title>
   </head>
-  <body class="bg-secondary">
+  <body class="bg-secondary scroll5">
 
+    <iframe src="" width="25%" height="80%" id="my-iframe" class="border-4 border border-dark shadow2" style="display: block; margin-left: 38%; position: absolute; z-index: 99; top: 10%;border-radius: 12px;">Click ESC to close.</iframe>
 
         <!--LogIn-->
         <div id="login" class="text-center bg-white w-25 border border-dark border-4 container mt-5 p-4" style="border-radius: 12px;"><div class="row"></div>
@@ -32,10 +33,16 @@
             <h5 class="">You must login with metamask to use dApp!</h5>
             <i class="bi bi-arrow-down" style="font-size: 2.5rem;"></i><br>
             <button type="button" class="btn btn-outline-dark me-3 w-100 border-3 fw-bold rounded-pill" data-bs-toggle="modal" data-bs-target="#logInModal" id="create-btn">Connect Wallet</button>
-            <p class="mt-3">You can change <strong>profile picture</strong> and your <strong>username</strong> in Profile Settings, after your wallet is connected.</p>
             <p class="mt-3">It is recommended to read <strong>instructions</strong> before you use dApp for the first time.</p>
             <i class="bi bi-arrow-down" style="font-size: 2.5rem;"></i><br>
             <button type="button" class="btn btn-dark w-50 border-3 fw-bold" data-bs-toggle="modal" data-bs-target="#instructionsModal" id="create-btn">Instructions</button>
+            <div class="mt-5 p-2 border border-2 border-dark text-danger fw-bold" style="border-radius: 12px;">
+                <h4 class="fw-bold">!NEW!<h4><hr><h5>NFT support is now added! <br>Works for every ERC-725 or ERC-1155 NFTs!
+                <br><br>
+                You can now buy Crypto with Fiat through this website!</h5>
+                <hr>
+                <p class="text-dark">Version 1.1.0</p>
+            </div>
         </div>
 
 
@@ -73,13 +80,13 @@
                       <div id="chat" class="w-45 col-5  mt-3 container bg-white overflow-auto scrollbar-hidden" style="border-radius: 12px; border: 3px solid black; height: 100%;">
                           <h2 class="text-center mt-2">Chat:</h2><hr>
                           <div id="chat-title"></div>
-                          <div id="chat-div" class="p-2 overflow-auto" style=" height: 64%; border-radius: 12px;"></div>
+                          <div id="chat-div" class="p-2 overflow-auto scroll4" style=" height: 64%; border-radius: 12px;"></div>
                           <div id="message-input-div">
                           </div>
                       </div>
           
                       <!--Group Info:-->
-                      <div id="groupInfo" class="w-25 col-2 mt-3 container bg-white overflow-auto scrollbar-hidden" style="border-radius: 12px; border: 3px solid black; max-height: 100%;">
+                      <div id="groupInfo" class="w-25 col-2 mt-3 container bg-white overflow-auto scrollbar-hidden pe-3 ps-3" style="border-radius: 12px; border: 3px solid black; max-height: 100%;">
                           <h2 class="text-center mt-2">Chat Group Info:</h2><hr>
                           <div id="groupInfoDiv"></div>
                           <div class="overflow-auto" id="infoAboutGroup">
@@ -95,15 +102,6 @@
                       </div></div>
                   </div>
           
-        
-
-
-
-
-
-
-
-
 
 
 
@@ -214,6 +212,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <button id="btn-buy" class="btn btn-outline-dark rounded-pill border-3 fw-bold w-100 mb-3">Buy Crypto</button>
                             <div class="input-group">
                                 <select class="form-select" id="balances-chain-select" aria-label="Example select with button addon">
                                     <option selected value="eth">Ethereum Mainnet</option>
@@ -238,12 +237,13 @@
                         <h1 class="modal-title" id="instructionsModal">Instructions:</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body mt-3 fs-5">
+                        <div class="modal-body mt-3 fs-5  scroll4">
                             <h3>To use this Chatting dApp:</h3>
                             <ol>
                                 <li>You need to log in with <strong>MetaMask</strong> or <strong>WalletConnect.</strong></li>
                                 <li>When you are logged in, it is recommended and nice to <strong>change your profile picture and username</strong> to whatever you want.</li>
                                 <li>Before you start Chatting please, read the <strong>rules</strong> in the middle.</li>
+                                <li><strong>Sometimes sending message or joining group will take a bit so please be patient.</strong></li>
                             </ol>
                             <hr>
                             <h3 class="mt-3">How to start chatting:</h3>
@@ -261,22 +261,25 @@
                                 <li>After you have done that click <strong>Create</strong> button and your Chat Group will be created.</li>
                             </ol>
                             <hr>
-                            <p><strong>UPDATES:</strong> UI update, NFT support and more is coming later this year!</p>
+                            <h3 class="mt-3">Buying Crypto:</h3>
+                            <ol>
+                                <li>Buying crypto through this website is powered by <strong><a href="https://onramper.com/" class="text-dark">Onramper Exchange</a></strong> and <strong><a href="https://moralis.io/" class="text-dark">Moralis Plugins</a>.</strong></li>
+                                <li>To buy crypto click <span class="fst-italic">My Balances</span> button and than click <span class="fst-italic">Buy Crypto</span> button.</li>
+                                <li>After you have done that Onramper Exchange window will open than use it to buy Crypto.</li>
+                                <li>If you are struggeling to close Onramper window, you can close it by clicking button ESC or clicking enywhere else on the website.</li>
+                            </ol>
+                            <hr>
+                            <h4><strong>COMMING SOON:</strong></h4><h5>UI update, new home page and more is coming later this year!</h5>
                             <hr>
                             <div class="text-center mt-3 mb-5">
                                 <span>Built by: <strong>Tjian</strong> (donate:<strong> 0xC4C6A0bc6648a4F343bd86D7C48C9967530fbB48</strong>)</span><br>
                                 <div class="d-inline-block float-center">
                                 <div class="fs-3 text-decoration-none text-success mt-4">Powerd by: <strong>MORALIS</strong></div>
-                                <form action="https://moralis.io" class="d-inline-block "></form>
-                                    <button class="btn text-success mt-0" id="moralis-btn" type="submit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-arrow-up-right-square-fill" viewBox="0 0 16 16">
-                                            <path d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12zM5.904 10.803 10 6.707v2.768a.5.5 0 0 0 1 0V5.5a.5.5 0 0 0-.5-.5H6.525a.5.5 0 1 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 .707.707z"/>
-                                          </svg>
-                                    </button><br>
-                                </form>
                                 </div>
-                                <div class="d-inline-block float-center ms-5">
-                                    <img src="https://moralis.io/wp-content/uploads/2021/06/cropped-Moralis-Favicon-Glass.png" alt="Moralis" width="150" height="150">
+                                <div class="d-block float-center ms-5">
+                                    <a href="https://moralis.io/" target="_blank">
+                                        <img src="https://moralis.io/wp-content/uploads/2021/06/cropped-Moralis-Favicon-Glass.png" alt="Moralis" width="100" height="100">
+                                    </a>
                                 </div>
                             </div>
                         </div>
