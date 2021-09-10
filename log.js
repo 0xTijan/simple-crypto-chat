@@ -5,6 +5,8 @@ async function init() {
     if(user){
         renderUserProfile(user.get("Image"), user.get("username"), user.get("ethAddress"));
         getAllGroups();
+        $("#my-iframe").hide();
+        Moralis.initPlugins();
         $("#chatDiv").empty();
         $("#chatDiv").html(`<p class="text-center fw-bold fs-5 m-3">Select one of the groups on the left, if there is none, create one!<br>And than click Join!</p>`);
         $("#groupInfoDiv").empty();
@@ -22,6 +24,7 @@ async function init() {
                 <li>No NSFW content!</li>
             </ol></strong>
             </div>
+            <div class="fs-5 mb-3 fw-bold text-decoration-underline">Sometimes sending message or joining group will take a bit longer so please be patient.</div><br>
             <h3>Thanks for following the rules!</h3>
         `);
         $("#chat-title").hide();
@@ -55,7 +58,6 @@ async function logInWalletConnect() {
 async function logOut() {
     try{
         await Moralis.User.logOut();
-        const user = Moralis.User.current();
     }catch(err){
         console.log("Error occured: " + err);
     }
@@ -65,7 +67,7 @@ async function logOut() {
 async function updateProfilePic() {
     try {
         const user = await Moralis.User.current();
-
+        
         //Updates:
         const url = await uploadNewImage();
         user.set("Image", url);
