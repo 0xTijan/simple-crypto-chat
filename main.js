@@ -3,6 +3,7 @@ window.onload = function() {
     Moralis.serverURL = "https://fpqcp09qsfeu.moralisweb3.com:2053/server";
     
     init();
+    $("#my-iframe").hide();
     
     $("#logout-btn").click(function(){
         $("#login").show();
@@ -13,17 +14,45 @@ window.onload = function() {
     $("#createGroup-btn").click(function() {
         let checkbox = document.getElementById("checkbox");
         let checkboxState = checkbox.checked;
-
         if(!checkboxState){
-            console.log("btn clicked creating token group"); 
             createGroup(); 
             $("#info2").empty(); 
         }else{
-            console.log("btn clicke creating NFT group");
             createNFTGroup();
             $("#info2").empty(); 
         }
     });
+
+
+
+
+    //Plugin - buy crypto:
+    $("#btn-buy").click(function() { buyCrypto() });
+    async function buyCrypto() {
+        let response = await Moralis.Plugins.fiat.buy({}, {disableTriggers: true});
+        document.getElementById('my-iframe').src = response.result.data;
+        $("#my-iframe").show();
+    }
+
+    $(document).on('keyup', function(e) {
+        if($("#my-iframe").is(":visible")) {
+            if (e.key == "Escape") {
+                $('#my-iframe').hide();
+            }
+        }
+    });
+
+    $(document).ready(function(){
+        $("#all").click(function(){
+            if($("#my-iframe").is(":visible")) {
+                $('#my-iframe').hide();
+            }
+        });
+    });
+
+    
+
+
 
     $("#btn-metamask").click(function() { loginMetaMask() });
     $("#btn-walletconnect").click(function() { logInWalletConnect() });
