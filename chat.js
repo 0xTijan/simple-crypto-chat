@@ -2,24 +2,18 @@ let subscription;
 
 async function sendMessage(id, chain, tokenAddress, tokenAmount, nft) {
     const user = await Moralis.User.current();
-    let messageText = $("#message-input").val();
     let tokenBalance;
     let requiredBalance;
-    let ethAddress = user.get("ethAddress");
 
     if(nft == 0){
-        console.log("sending message nft group" + "NFT: " + nft);
-        nftBalance = await checkNFTBalance(chain, tokenAddress, ethAddress);
-        console.log("NFT balance: " + nftBalance);
+        nftBalance = await checkNFTBalance(chain, tokenAddress);
     }else{
 
     }
 
 
     if(nft==0){
-        console.log("sending message in nft group NFT: " + nft);
-        let nftBalance = await checkNFTBalance(chain, tokenAddress, ethAddress);
-        console.log("NFT balance: " + nftBalance);
+        let nftBalance = await checkNFTBalance(chain, tokenAddress);
         let messageText = $("#message-input").val();
 
         if(messageText && messageText.length > 0 && nftBalance >= tokenAmount){
@@ -41,19 +35,11 @@ async function sendMessage(id, chain, tokenAddress, tokenAmount, nft) {
             message.set("group", id);
             message.set("img", image);
             await message.save();
-    
-            //Consol logging, ...
-            console.log(message);
-            //console.log(message.getDate());
             $("#message-input").val("");
-    
-            //Rendering message:
         }else{
             alert("Cannot send message! Empty or insufficient balance 0!");
         }
     }else{ 
-        console.log("sending message in not not nft group");
-        console.log("chain: " + chain + " token address: " + tokenAddress)
         let token = await Moralis.Cloud.run("getToken", {address: tokenAddress, chain: chain});
         let decimals;
         if(token == undefined) {
@@ -62,14 +48,11 @@ async function sendMessage(id, chain, tokenAddress, tokenAmount, nft) {
             decimals = token[0].decimals;
         }
         requiredBalance = tokenAmount / (10**decimals);
-        tokenBalance = await checkBalance(chain, tokenAddress, decimals);
+        tokenBalance = await checkBalance(chain, tokenAddress);
         let messageText1 = $("#message-input").val();
 
 
         if(messageText1 && messageText1.length > 0){
-
-            console.log(messageText1);
-            console.log(tokenBalance >= requiredBalance);
             if(tokenBalance >= requiredBalance){
                 //Gettting current User:
                 let sender = user.get("username");
@@ -86,39 +69,12 @@ async function sendMessage(id, chain, tokenAddress, tokenAmount, nft) {
                 message.set("group", id);
                 message.set("img", image);
                 await message.save();
-        
-                //Consol logging, ...
-                console.log(message);
-                //console.log(message.getDate());
                 $("#message-input").val("");
-        
-                //Rendering message:
             }
         }else{
             alert("Cannot send message! Empty or insufficient balance 0!");
         }
     }
-
-    /*if(messageText && messageText.length > 0 && tokenBalance >= requiredBalance){
-        //Gettting current User:
-        let sender = user.get("username");
-        let image = user.get("Image");
-
-        //Creatting Object:
-        const Message = Moralis.Object.extend("Messages");
-        let message = new Message();
-
-        message.set("sender", sender);
-        message.set("text", messageText);
-        message.set("group", id);
-        message.set("img", image);
-        await message.save();
-
-        $("#message-input").val("");
-    }else{
-        alert("Cannot send message! Empty or insufficient balance!");
-    }*/
-
 }
 
 async function getHistory(id){
