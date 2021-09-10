@@ -1,5 +1,5 @@
 # Crypto-Chat-dApp
-Crypto Chat dApp was build for Moralis Weekly Challenge 1.
+Crypto Chat dApp was build for Moralis Weekly Challenge 1. <br>
 Where we had to build real-time chatting dApp in less than a week.
 
 My Crypto Chatting dApp has:
@@ -13,5 +13,5 @@ My Crypto Chatting dApp has:
 - it is also cross-chain (eth mainnet, bsc mainnet, testnets)
 - real time chatting
 
-You can try it out here: https://fpqcp09qsfeu.moralisweb3.com/ .
+You can try it out here: https://fpqcp09qsfeu.moralisweb3.com/ . <br>
 You can also see Ivan on Tech's review of my dApp here: https://youtu.be/GeHnbLVjBDM?t=1031 watch for 3 min.
