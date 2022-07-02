@@ -3,7 +3,7 @@ Simple Chat is decentralized application, where anyone can create a chat group w
 
 Please leave a ⭐ if you like it.
 
-![Chat Preview](./chat-preview.png)
+![Chat Preview](./simple-chat.png)
 
 ## Try It Out
 You can try it out yourself in [live demo](https://projects.tijan.dev/simple-chat).
